@@ -16,7 +16,7 @@ Once the input file is setup correctly and saved, the model can be called by run
 ## Output from farm scale simulation
 The output is contained in a spreadsheet file located here "./outputs/". The output file name will be identical to the input file and contains different sheets. The input variables given to the model are shown under the 'input_barn' and 'input_storage' sheets, emission of CH4, CO2, NH3 and N2O are given under 'emission_dat'. The sheets 'nutrient_dat' contains information about C and N loss, 'manure' contains information about the composition of the excreted manure, and 'feed' holds information about the composition of the feed. The sheet 'feed_spill' shows how much feed was spilled into the pits inside the barn. 
 
-## maintainer information
+## Maintainer information
 Frederik Rask Dalby: 
 fd@bce.au.dk
 
