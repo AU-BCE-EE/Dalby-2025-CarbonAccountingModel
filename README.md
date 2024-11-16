@@ -1,4 +1,4 @@
-# Carbon accounting model 
+# Carbon Accounting Model 
 This repository contains code and files for running the Carbon Accounting Model, which was developed as part of the Udvidet Normtal Project. The model is a tool for accounting the carbon loss and emission of methane and carbon dioxide from livestock animals and manure at farm scale. These projects that have contributed to the model development and optimization are listed below. 
 
 "TABLE HERE"
