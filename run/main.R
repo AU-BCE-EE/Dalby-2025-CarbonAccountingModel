@@ -1,6 +1,8 @@
 # Runs all scenarios for sensitivity predicitons
 rm(list = ls())
 
+setwd("C:/Users/au277187/OneDrive - Aarhus universitet/Documents/GitHub/AU-BCE-EE/ABM_carbon_accounting_git/run")
+
 library(tidyr)
 library(ggplot2)
 library(ABM)
