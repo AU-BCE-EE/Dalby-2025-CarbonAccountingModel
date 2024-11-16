@@ -9,7 +9,7 @@ calcNorm <- function(barn_dat, storage_dat, digestate_dat, ave, days, years, det
                  'm2','m1','m0', 'rut_m0','rut_m1','rut_m2',
                  'TAN_eff_conc','urea_eff_conc','wash_water', 'batch_time', 'rest_d', 'MCF_CH4_solid_manure' ,'solid_manure', 'VS_CH4',
                  'CH4_ent', 'CO2_ent', 'temp_C')
-  
+
   # make separate frame with enteric data
   ent_dat <- barn_dat[, names(barn_dat) %in% norm_vars] %>% 
     mutate(source = 'enteric', CH4_emis_rate = CH4_ent/365 * n_anim, CO2_emis_rate = CO2_ent/365 * n_anim,
@@ -19,7 +19,16 @@ calcNorm <- function(barn_dat, storage_dat, digestate_dat, ave, days, years, det
   ent_dat$CH4_emis_rate[ent_dat$slurry_prod_rate == 0] <- 0
   ent_dat$CH4_A_emis_rate[ent_dat$slurry_prod_rate == 0] <- 0
   ent_dat$CO2_emis_rate[ent_dat$slurry_prod_rate == 0] <- 0
-
+  
+  ent_dat <- ent_dat %>%
+    mutate(
+      time_diff = c(0, diff(time)),  # Calculate time difference between consecutive time points
+      CH4_emis_rate = CH4_emis_rate * time_diff,
+      CH4_A_emis_rate = CH4_A_emis_rate * time_diff,# Calculate emission for each time interval
+      CH4_emis_cum = cumsum(CH4_emis_rate),
+      CH4_A_emis_cum = cumsum(CH4_A_emis_rate)# Cumulative sum of emissions
+    )
+    
   barn_dat$storage_ID <- NA
   barn_dat$digestate_ID <- NA 
 
@@ -41,10 +50,6 @@ calcNorm <- function(barn_dat, storage_dat, digestate_dat, ave, days, years, det
   
   C_load <- expression((max(C_load_cum) - min(C_load_cum))/1000) # kg/yr
   N_load <- expression((max(N_load_cum) - min(N_load_cum))/1000) # kg/yr
-
-  norm_dat$CH4_emis_rate[norm_dat$source == 'enteric']/365/norm_dat$n_anim[1]
-  norm_dat$CH4_A_emis_rate[norm_dat$source == 'enteric']/365/norm_dat$n_anim[1]
-  norm_dat$CO2_emis_rate[norm_dat$source == 'enteric']/365/norm_dat$n_anim[1]
   
   C_CH4 <- 12.0107/16.042
   C_CO2 <- 12.0107/44.009

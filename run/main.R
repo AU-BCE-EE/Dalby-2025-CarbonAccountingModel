@@ -1,15 +1,14 @@
 # Runs all scenarios for sensitivity predicitons
 rm(list = ls())
 
-setwd("C:/Users/au277187/OneDrive - Aarhus universitet/Documents/GitHub/AU-BCE-EE/ABM_carbon_accounting_git/run")
-
 library(tidyr)
-library(ggplot2)
 library(ABM)
 
 # Load R functions
 ff <- list.files('../R', full.names = TRUE) 
 for (i in ff) source(i)
+
+abm_packages()
 
 # Get input file names
 fs <- list.files("../inputs/", full.names = TRUE)
