@@ -1,5 +1,7 @@
 # Carbon accounting model 
-This repository contains the Carbon accounting model developed in the Udvidet Normtal Project. Here you can find code and files for runing the model
+This repository contains code and files for running the Carbon Accounting Model, which was developed as part of the Udvidet Normtal Project. Many other projects has contributed to the development of parts of the model. These projects are listed below.
+
+"TABLE"
 
 ## Background
 The model is based on 1) A static calculation of enteric emission and digestiblity of organic matter and 2) a dynamic simulation of organic matter transformation in manure storages with the Anerobic Biodegradation Model (ABM). A thourough description of the governing equations for enteric emission, digestibility and exretion of organic matter is described for pigs in Lashkari et al. 2025 and for cattle it is described in XXX et al. 2025.
