@@ -145,6 +145,6 @@ calcNorm <- function(barn_dat, storage_dat, digestate_dat, ave, days, years, det
   emission_dat <- emission_dat[, !colnames(emission_dat) %in% 'prod_area']
   
   
-  return(list(emission_dat = emission_dat, nutrient_dat = nutrient_dat, production_dat = production_dat, expl_dat = expl_dat))
+  return(list(emission_dat = emission_dat, nutrient_dat = nutrient_dat))
 }  
 

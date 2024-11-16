@@ -5,14 +5,9 @@ library(tidyr)
 library(ggplot2)
 library(ABM)
 
-#devtools::install_github('AU-BCE-EE/ABM', build_vignettes = FALSE)
-
 # Load R functions
 ff <- list.files('../R', full.names = TRUE) 
 for (i in ff) source(i)
-
-# Get packages
-abm_packages()
 
 # Get input file names
 fs <- list.files("../inputs/", full.names = TRUE)
