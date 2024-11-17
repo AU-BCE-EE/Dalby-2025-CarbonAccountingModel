@@ -20,7 +20,13 @@ The output is contained in a spreadsheet file located here "./outputs/". The out
 Frederik Rask Dalby. Contact information here: https://au.dk/fd@bce.au.dk
 
 ## References
+Dalby, F.R., Hafner, S.D., Petersen, S.O., Vanderzaag, A., Habtewold, H., Dunfield, K., Chantigny, M.H., Sommer, S.G., 2021. A mechanistic model of methane emission from animal slurry with a focus on microbial groups. PLOS ONE. https://doi.org/10.1371/journal.pone.0252881
 
+Dalby, F.R., Hansen, M.J., Guldberg, L.B., Hafner, S.D., Feilberg, A., 2023. Simple Management Changes Drastically Reduce Pig House Methane Emission in Combined Experimental and Modeling Study. Environ. Sci. Technol. https://doi.org/10.1021/acs.est.2c08891
+
+Dalby, F.R., Ambrose, H.W., Poulsen, J.S., Nielsen, J.L., Adamsen, A.P.S., 2023. Pig slurry organic matter transformation and methanogenesis at ambient storage temperatures. JEQ. https://doi.org/10.1002/jeq2.20512
+
+Dalby, F.R., Hafner, S.D., Ambrose, H.W., Adamsen, A.P.S., 2024. Pig manure degradation and carbon emission: Measuring and modeling combined aerobic–anaerobic transformations. JEQ. https://doi.org/10.1002/jeq2.20603
 
 
 
