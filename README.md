@@ -1,7 +1,7 @@
 # Carbon Accounting Model 
 This repository contains code and files for running the Carbon Accounting Model, which was developed as part of the Udvidet Normtal Project. The model is a tool for accounting the carbon loss and emission of methane and carbon dioxide from livestock animals and manure at farm scale. These projects that have contributed to the model development and optimization are listed below. 
 
-"TABLE HERE"
+Udvidet Normtal, PIGMET, MILK, klimagylle, metemis
 
 ## Background
 The model is based on 1) A static calculation of enteric emission and digestiblity of organic matter and 2) a dynamic simulation of organic matter transformation in manure storages with the Anerobic Biodegradation Model (ABM). A thourough description of the governing equations for enteric emission, digestibility and exretion of organic matter is described for pigs in Lashkari et al. 2025 and for cattle it is described in XXX et al. 2025.
