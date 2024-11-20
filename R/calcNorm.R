@@ -19,14 +19,23 @@ calcNorm <- function(barn_dat, storage_dat, digestate_dat, ave, days, years, det
   ent_dat$CH4_emis_rate[ent_dat$slurry_prod_rate == 0] <- 0
   ent_dat$CH4_A_emis_rate[ent_dat$slurry_prod_rate == 0] <- 0
   ent_dat$CO2_emis_rate[ent_dat$slurry_prod_rate == 0] <- 0
+  ent_dat$NH3_emis_rate[ent_dat$slurry_prod_rate == 0] <- 0
+  ent_dat$N2O_emis_rate[ent_dat$slurry_prod_rate == 0] <- 0
   
   ent_dat <- ent_dat %>%
     mutate(
       time_diff = c(0, diff(time)),  # Calculate time difference between consecutive time points
       CH4_emis_rate = CH4_emis_rate * time_diff,
-      CH4_A_emis_rate = CH4_A_emis_rate * time_diff,# Calculate emission for each time interval
+      CH4_A_emis_rate = CH4_A_emis_rate * time_diff,
+      CO2_emis_rate = CO2_emis_rate * time_diff,
+      NH3_emis_rate = NH3_emis_rate * time_diff,
+      N2O_emis_rate = N2O_emis_rate * time_diff,# Calculate emission for each time interval
       CH4_emis_cum = cumsum(CH4_emis_rate),
-      CH4_A_emis_cum = cumsum(CH4_A_emis_rate)# Cumulative sum of emissions
+      CH4_A_emis_cum = cumsum(CH4_A_emis_rate),
+      CO2_emis_cum = cumsum(CO2_emis_rate),
+      NH3_emis_cum = cumsum(NH3_emis_rate),
+      N2O_emis_cum = cumsum(N2O_emis_rate)
+      # Cumulative sum of emissions
     )
     
   barn_dat$storage_ID <- NA
@@ -147,9 +156,26 @@ calcNorm <- function(barn_dat, storage_dat, digestate_dat, ave, days, years, det
   # bind with emission data and sum up. 
   emission_dat <- merge(emission_dat, CH4_kg_solid, all = T) %>% select(source, year, section_ID, storage_ID, digestate_ID, everything())                      
   emission_dat[is.na(emission_dat)] <- 0
-  emission_dat <- emission_dat[, !colnames(emission_dat) %in% 'prod_area']
+  emission_dat <- emission_dat[, !colnames(emission_dat) %in% c('prod_area','year')]
+  #emission_dat <- data.frame(emission_dat)
+  #browser()
   
+  setDT(emission_dat)
+  emission_long <- melt(emission_dat, measure.vars = names(emission_dat)[!names(emission_dat) %in% c('source','section_ID','storage_ID','digestate_ID')])
   
-  return(list(emission_dat = emission_dat, nutrient_dat = nutrient_dat))
+  allowed_strings <- c('CH4_C', 'CO2_C', 'NH3', 'N2O')
+  
+  # Create a regex pattern to match only the desired substrings
+  pattern <- paste0(".*(", paste(allowed_strings, collapse = "|"), ").*")
+  
+  # Extract the desired part or replace with NA if no match
+  emission_long$gas <- ifelse(grepl(pattern, emission_long$variable),
+                            sub(pattern, "\\1", emission_long$variable),
+                            NA)
+  emission_long$gas <- gsub('_C','-C', emission_long$gas)
+  emission_long$gas <- gsub('NH3','NH3-N', emission_long$gas)
+  emission_long$gas <- gsub('N2O','N2O-N', emission_long$gas)
+
+  return(list(Emission = as.data.frame(emission_long), nutrient_dat = nutrient_dat))
 }  
 
