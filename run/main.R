@@ -51,9 +51,14 @@ for (i in fs){
   if(length(out) == 2) out['call'] <- as.character(out['call'])
 
   input_barn <- read_excel(i, sheet = 'in-barn', skip = 1, col_names = TRUE)
-  input_storage <- read_excel(i, sheet = 'out-of-barn', skip = 1, col_names = TRUE)
+  max_col_in_barn <- min(which(!is.na(colnames(input_barn)[apply(input_barn == "deactive", 2, any)]))) - 2
+  input_barn <- input_barn[, 2:max_col_in_barn]
   
-  output1 <- c(list(input_barn = input_barn, input_storage = input_storage), out, i)
+  input_storage <- read_excel(i, sheet = 'out-of-barn', skip = 1, col_names = TRUE)
+  max_col_in_storage <- min(which(!is.na(colnames(input_storage)[apply(input_storage == "deactive", 2, any)]))) - 2
+  input_storage <- input_storage[, 2:max_col_in_storage]
+  output1 <- c(list('Inputs in-barn' = input_barn, 'Input out-of-barn' = input_storage), out, i)
+  output1[[8]] <- NULL # remove last output (NTS why is it there to start with? - might be from error message setup)
   
   # combine outputs
   output <- c(output, output1)
@@ -62,6 +67,7 @@ for (i in fs){
   xlsx <- gsub('xlsm','xlsx', xlsm)
   
   save_file <- paste0('../outputs/', xlsx)
+  save_file <- gsub('.xlsx', '_output.xlsx', save_file)
   
   write.xlsx(output1, save_file, append = TRUE, rowNames = TRUE)
 

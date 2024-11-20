@@ -45,9 +45,9 @@ abm_farm <- function(dat, storage_mode = TRUE, years = 3, temp_overwrite = NULL,
   storage_dat <- abm_storage_out$storage_dat
   digestate_dat <- abm_storage_out$digestate_dat
   norm <- calcNorm(barn_dat, storage_dat, digestate_dat, ave, days, years, detail_output = detail_output, feed = farm_dat$excreta_dat$feed)
-  norm$Manure <- data.frame(farm_dat$excreta_dat['manure'], unit = c(rep('g pr batch time', 7), c(rep('gN pr batch time', 2)), rep('kg pr batch time', 6)))
+  norm$`Manure excretion` <- data.frame(farm_dat$excreta_dat['manure'], unit = c(rep('g pr batch time', 7), c(rep('gN pr batch time', 2)), rep('kg pr batch time', 6)))
   norm$`Feed composition` <- data.frame(farm_dat$excreta_dat['feed'], unit = c(rep('g pr kg wet feed', 15), c('kg wet feed pr. animal pr. batch')))
-  norm$`Feed spill` <- data.frame(farm_dat$excreta_dat['feed_spill'], unit = c('g pr. animal pr. batch time'))
+  norm$`Feed spillage` <- data.frame(farm_dat$excreta_dat['feed_spill'], unit = c('g pr. animal pr. batch time'))
 
   return(norm)
 }

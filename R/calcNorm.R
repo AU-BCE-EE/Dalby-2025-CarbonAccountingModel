@@ -13,7 +13,7 @@ calcNorm <- function(barn_dat, storage_dat, digestate_dat, ave, days, years, det
   # make separate frame with enteric data
   ent_dat <- barn_dat[, names(barn_dat) %in% norm_vars] %>% 
     mutate(source = 'enteric', CH4_emis_rate = CH4_ent/365 * n_anim, CO2_emis_rate = CO2_ent/365 * n_anim,
-           CH4_A_emis_rate = CH4_ent/365 * n_anim, NH3_emis_rate = 0)
+           CH4_A_emis_rate = CH4_ent/365 * n_anim, NH3_emis_rate = 0, storage_ID = 0, digestate_ID = 0)
 
   # enteric is 0 when no slurry is produced
   ent_dat$CH4_emis_rate[ent_dat$slurry_prod_rate == 0] <- 0
@@ -37,7 +37,7 @@ calcNorm <- function(barn_dat, storage_dat, digestate_dat, ave, days, years, det
       N2O_emis_cum = cumsum(N2O_emis_rate)
       # Cumulative sum of emissions
     )
-    
+
   barn_dat$storage_ID <- NA
   barn_dat$digestate_ID <- NA 
 
@@ -94,7 +94,7 @@ calcNorm <- function(barn_dat, storage_dat, digestate_dat, ave, days, years, det
                   summarise(C_load_kg_yr =  eval(C_load), 
                   C_emit_kg_yr = ((max(CH4_emis_cum) - min(CH4_emis_cum)) * C_CH4 + (max(CO2_emis_cum) - min(CO2_emis_cum)) * C_CO2)/1000,
                   N_load_kg_yr = eval(N_load), N_emit_kg_yr = ((max(NH3_emis_cum) - min(NH3_emis_cum)) + (max(N2O_emis_cum) - min(N2O_emis_cum)))/1000)
-                        
+                    
     enteric_nutrient <- reframe(group_by(norm_dat[norm_dat$source == 'enteric',], source, year, section_ID, storage_ID, digestate_ID),
                       C_load_kg_yr = (feed['Starch'] * 0.444 + feed['Sugar'] * 0.421 + feed['ResFib'] * 0.444 + feed['CP'] * 0.550 + feed['Cfat'] * 0.759) * feed['feed_intake'] * unique(n_anim)/1000,
                       C_emit_kg_yr = emission_dat$CH4_C_kg_yr[emission_dat$source == 'enteric'] + emission_dat$CO2_C_kg_yr[emission_dat$source == 'enteric'],
@@ -108,8 +108,37 @@ calcNorm <- function(barn_dat, storage_dat, digestate_dat, ave, days, years, det
     nutrient_dat <- nutrient_dat %>% group_by(source, year, section_ID, storage_ID, digestate_ID) %>%
       mutate(C_loss_frac = C_emit_kg_yr/C_load_kg_yr, N_loss_frac = N_emit_kg_yr/N_load_kg_yr) %>% filter(year == years-1)
     nutrient_dat[is.na(nutrient_dat)] <- 0
+    nutrient_dat$year = NULL
 
+  # here implement new format
   
+  nutrient_long <- pivot_longer(nutrient_dat, cols = names(nutrient_dat)[!names(nutrient_dat) %in% c('source','section_ID','storage_ID','digestate_ID','year')],
+                                names_to = 'variable', values_to = 'value')
+  allowed_strings <- c('C', 'N')
+  
+  # Create a regex pattern to match only the desired substrings
+  pattern <- paste0(".*(", paste(allowed_strings, collapse = "|"), ").*")
+  
+  # Extract the desired part or replace with NA if no match
+  nutrient_long$element <- ifelse(grepl(pattern, nutrient_long$variable),
+                              sub(pattern, "\\1", nutrient_long$variable),
+                              NA)
+
+  nutrient_long$unit <- nutrient_long$variable
+  nutrient_long$unit <- gsub('C_|N_','',nutrient_long$unit)
+  
+  unit_patterns <- c('load_kg_yr','emit_kg_yr','loss_frac')
+  unit_replacements <- c('kg loaded pr. year', 'kg emitted pr. year', 'fraction lost pr. year')
+  
+  for(i in seq_along(unit_patterns)){
+    nutrient_long$unit <- gsub(unit_patterns[i], unit_replacements[i], nutrient_long$unit)
+  }
+  
+  nutrient_long$variable <- NULL
+  nutrient_long  <- nutrient_long %>%
+    arrange(element, unit)
+  nutrient_long <- nutrient_long  %>% select(source, section_ID, storage_ID, digestate_ID, element, value, unit)
+
   production_dat <- norm_dat %>%
     filter(!source %in% c('enteric')) %>%
     group_by(source, year, section_ID, storage_ID, digestate_ID) %>%
@@ -157,25 +186,38 @@ calcNorm <- function(barn_dat, storage_dat, digestate_dat, ave, days, years, det
   emission_dat <- merge(emission_dat, CH4_kg_solid, all = T) %>% select(source, year, section_ID, storage_ID, digestate_ID, everything())                      
   emission_dat[is.na(emission_dat)] <- 0
   emission_dat <- emission_dat[, !colnames(emission_dat) %in% c('prod_area','year')]
-  #emission_dat <- data.frame(emission_dat)
-  #browser()
-  
-  setDT(emission_dat)
-  emission_long <- melt(emission_dat, measure.vars = names(emission_dat)[!names(emission_dat) %in% c('source','section_ID','storage_ID','digestate_ID')])
+  emission_long <- pivot_longer(emission_dat, cols = names(emission_dat)[!names(emission_dat) %in% c('source','section_ID','storage_ID','digestate_ID')], 
+                                names_to = 'variable', values_to = 'value')
   
   allowed_strings <- c('CH4_C', 'CO2_C', 'NH3', 'N2O')
   
   # Create a regex pattern to match only the desired substrings
   pattern <- paste0(".*(", paste(allowed_strings, collapse = "|"), ").*")
-  
+
   # Extract the desired part or replace with NA if no match
   emission_long$gas <- ifelse(grepl(pattern, emission_long$variable),
                             sub(pattern, "\\1", emission_long$variable),
                             NA)
+  
   emission_long$gas <- gsub('_C','-C', emission_long$gas)
   emission_long$gas <- gsub('NH3','NH3-N', emission_long$gas)
   emission_long$gas <- gsub('N2O','N2O-N', emission_long$gas)
+  emission_long$unit <- emission_long$variable
+  emission_long$unit <- gsub('CH4_C_','',emission_long$unit)
+  emission_long$unit <- gsub('CH4_C_|CO2_C_|NH3_N_|N2O_N_','',emission_long$unit)
+  
+  unit_patterns <- c('kg_yr','kg_anim_yr','kg_m3_load_yr','percent_C_load_yr','kg_parea_yr','percent_N_load_yr')
+  unit_replacements <- c('kg pr. year', 'kg pr. animal pr. year', 'kg pr. tonne slurry loaded', '% of C loaded', 'kg pr. production area pr. year', '% of N loaded')
 
-  return(list('Emission data' = as.data.frame(emission_long), 'Nutrient balance' = nutrient_dat))
+  for(i in seq_along(unit_patterns)){
+      emission_long$unit <- gsub(unit_patterns[i], unit_replacements[i], emission_long$unit)
+  }
+    
+  emission_long$variable <- NULL
+  emission_long <- emission_long %>%
+    arrange(gas, unit)
+  emission_long <- emission_long %>% select(source, section_ID, storage_ID, digestate_ID, gas, value, unit)
+  
+  return(list('Emission data' = as.data.frame(emission_long), 'Nutrient balance' = nutrient_long))
 }  
 

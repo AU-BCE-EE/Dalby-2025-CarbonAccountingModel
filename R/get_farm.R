@@ -62,7 +62,7 @@ get_farm <- function(w, days, dat, temp_overwrite = NULL){
       stop(paste0('Section ',w,' passes slurry to storage ID ',storage_tank_ID,', but storage ID ', storage_tank_ID,' is deactive. Change to an active storage or activate storage ID ', storage_tank_ID))
     }
   }
-    
+
   storage_parms <- get_storages(storages)
   attach(storage_parms)
   
