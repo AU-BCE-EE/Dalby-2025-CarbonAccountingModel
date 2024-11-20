@@ -176,6 +176,6 @@ calcNorm <- function(barn_dat, storage_dat, digestate_dat, ave, days, years, det
   emission_long$gas <- gsub('NH3','NH3-N', emission_long$gas)
   emission_long$gas <- gsub('N2O','N2O-N', emission_long$gas)
 
-  return(list(Emission = as.data.frame(emission_long), nutrient_dat = nutrient_dat))
+  return(list('Emission data' = as.data.frame(emission_long), 'Nutrient balance' = nutrient_dat))
 }  
 
