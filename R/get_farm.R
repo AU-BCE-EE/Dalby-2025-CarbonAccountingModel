@@ -1,8 +1,7 @@
 get_farm <- function(w, days, dat, temp_overwrite = NULL){
   
   COD_conv <- c(CH4 = 0.2507, xa_dead = 0.73, RFd = 0.8444792, iNDF = 0.8444792, starch = 0.8444792, Cfat = 0.3117844, CP = 0.6541602,
-                VFA = 0.9383125, non_urea_N = 1/0.9237898, S = 0.5015, VS = 0.69, CO2_anaer = 0.53, CO2_aer = 1.1, CO2_sr = 1.2, 
-                n_CP = 0.1014)
+                VFA = 0.9383125, non_urea_N = 1/0.9237898, S = 0.5015, VS = 0.69)
 
   #get information about the different sections 
   sections <- read_excel(path = dat, sheet = "in-barn", skip = 1, col_names = TRUE)
