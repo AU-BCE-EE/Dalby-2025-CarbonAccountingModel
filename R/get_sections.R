@@ -30,6 +30,7 @@ get_sections <- function(sections = sections){
   bedding_TS =      sections[['total_solids_in_bedding_material,_%']],
   feed_intake =    ifelse(class_anim == "pig", sections[["feed_intake,_kg_animal-1"]], sections[["feed_intake,_kg_DM_animal-1_yr-1"]]),
   feed_spill_frac = sections[['feed_spill_fraction,_%']],
+  water_spill =    sections[['water_spill,_kg_animal-1']],
   milk_prod =      sections[["milk_production,_kg_animal-1_yr-1"]],
   milk_pro =       sections[["milk_protein,_g_kg_milk-1"]],
   body_weight =    sections[['body_weight,_kg_animal-1']],

@@ -122,7 +122,7 @@ get_farm <- function(w, days, dat, temp_overwrite = NULL){
   # using feed composition and functions for urine and feces volumes and masses. 
   # NTS water spill is not included here, any solution. Need to infact account for water spillage.
   # Washing water is accounted for elsewhere.
-  slurry <- (excreta_dat$manure[['feces']] + excreta_dat$manure[['urine']] + bedding + sum(feed_spill)/1000)
+  slurry <- (excreta_dat$manure[['feces']] + excreta_dat$manure[['urine']] + bedding + sum(feed_spill)/1000) + water_spill
   slurry_tot <- slurry * n_anim
   slurry_tot_day <- slurry_tot/batch_time
   feed_DM <- feed['DM']/1000
@@ -261,7 +261,7 @@ get_farm <- function(w, days, dat, temp_overwrite = NULL){
  
   extra_pars <- list(type_anim = type_anim, n_anim = n_anim, class_anim = class_anim, batch_time = batch_time, 
                        prod_area = prod_area, barn_acid = barn_acid, barn_acid_dose = barn_acid_dose, 
-                       solid_liquid = solid_liquid, removal_SLS = removal_SLS,
+                       solid_liquid = solid_liquid, removal_SLS = removal_SLS, water_spill = water_spill,
                        wash_water = wash_water, f_ex_storage = f_ex_storage, f_biogas = f_biogas, removal_biogas = removal_biogas, 
                        section_ID = section_ID, rest_d = rest_d, ex_storage_rain = ex_storage_rain, ex_storage_radiation = ex_storage_radiation,
                      ex_storage_area = ex_storage_area, ex_storage_depth = ex_storage_depth,  
@@ -285,6 +285,7 @@ get_farm <- function(w, days, dat, temp_overwrite = NULL){
   excreta_dat$feed_spill <- feed_spill
   excreta_dat$manure['bedding'] <- bedding
   excreta_dat$manure['feed_spill'] <- sum(feed_spill)/1000
+  excreta_dat$manure['water_spill'] <- water_spill
   excreta_dat$manure['slurry'] <- slurry
   
   # correct to wet feed intake
