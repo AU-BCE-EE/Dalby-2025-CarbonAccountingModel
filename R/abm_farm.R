@@ -8,7 +8,7 @@ abm_farm <- function(dat, storage_mode = TRUE, years = 3, temp_overwrite = NULL,
   
   # read demo and determine number of abm runs that has to be done for the barn (due to different sections) 
   s <- read_excel(dat, sheet = "in-barn", skip = 1, col_names = TRUE)
-  
+
   # new xl files
   if('Sections' %in% colnames(s)) {
     sim <- as.numeric(s$Sections[1])

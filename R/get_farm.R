@@ -31,12 +31,12 @@ get_farm <- function(w, days, dat, temp_overwrite = NULL){
     
     if(!is.null(temp_overwrite)) {
       if(temp_overwrite == 'NIR'){
-        temp_C_dat$temp_air_C <- outside_slurry_temp_NIR$temp_C + 2.4
-        temp_air_C <- mean(outside_slurry_temp_NIR$temp_air_C) + 2.4
+        temp_C_dat$temp_air_C <- ABM::outside_slurry_temp_NIR$temp_C + 2.4
+        temp_air_C <- mean(ABM::outside_slurry_temp_NIR$temp_air_C) + 2.4
       }
       if(temp_overwrite == 'Vechi'){
-        temp_C_dat$temp_air_C <- outside_slurry_temp_vechi$temp_C + 2.4
-        temp_air_C <- mean(outside_slurry_temp_NIR$temp_air_C) + 2.4
+        temp_C_dat$temp_air_C <- ABM::outside_slurry_temp_vechi$temp_C + 2.4
+        temp_air_C <- mean(ABM::outside_slurry_temp_vechi$temp_C) + 2.4
       }
     }
     
