@@ -69,9 +69,6 @@ calcNorm <- function(barn_dat, storage_dat, digestate_dat, ave, days, years, det
                             CH4_C_kg_m3_load_yr = (max(CH4_emis_cum, na.rm = T) - min(CH4_emis_cum, na.rm = T))/1000 /eval(.slurry_loaded) * C_CH4, CH4_C_kg_m3_yr = mean(CH4_emis_rate, na.rm = T)/mean(slurry_mass, na.rm = T) * 365 * C_CH4, 
                             CH4_C_percent_C_load_yr = (max(CH4_emis_cum, na.rm = T) - min(CH4_emis_cum, na.rm = T))/1000/eval(C_load) * C_CH4 * 100,
                             
-                            CH4_C_A_kg_yr = (max(CH4_A_emis_cum, na.rm = T) - min(CH4_A_emis_cum, na.rm = T))/1000 * C_CH4, CH4_C_A_kg_anim_yr = (max(CH4_A_emis_cum, na.rm = T) - min(CH4_A_emis_cum, na.rm = T))/1000 /n_anim * C_CH4, CH4_C_A_kg_parea_yr = (max(CH4_A_emis_cum, na.rm = T) - min(CH4_A_emis_cum, na.rm = T))/1000 /prod_area * C_CH4, 
-                            CH4_C_A_kg_m3_load_yr = (max(CH4_A_emis_cum, na.rm = T) - min(CH4_A_emis_cum, na.rm = T))/1000 /eval(.slurry_loaded) * C_CH4, CH4_C_A_kg_m3_yr = mean(CH4_A_emis_rate, na.rm = T)/mean(slurry_mass, na.rm = T) * 365 * C_CH4,
-                            
                             NH3_N_kg_yr = (max(NH3_emis_cum, na.rm = T) - min(NH3_emis_cum, na.rm = T))/1000,  NH3_N_kg_anim_yr = (max(NH3_emis_cum, na.rm = T) - min(NH3_emis_cum, na.rm = T))/1000 /n_anim, NH3_N_kg_parea_yr = (max(NH3_emis_cum, na.rm = T) - min(NH3_emis_cum, na.rm = T))/1000 /prod_area,
                             NH3_N_kg_m3_load_yr = (max(NH3_emis_cum, na.rm = T) - min(NH3_emis_cum, na.rm = T))/1000 /eval(.slurry_loaded), NH3_N_kg_m3_yr = mean(NH3_emis_rate, na.rm = T)/mean(slurry_mass, na.rm = T) * 365,
                             NH3_N_percent_N_load_yr = (max(NH3_emis_cum, na.rm = T) - min(NH3_emis_cum, na.rm = T))/1000/eval(N_load) * 100,
@@ -205,9 +202,9 @@ calcNorm <- function(barn_dat, storage_dat, digestate_dat, ave, days, years, det
   emission_long$unit <- emission_long$variable
   emission_long$unit <- gsub('CH4_C_','',emission_long$unit)
   emission_long$unit <- gsub('CH4_C_|CO2_C_|NH3_N_|N2O_N_','',emission_long$unit)
-  
-  unit_patterns <- c('kg_yr','kg_anim_yr','kg_m3_load_yr','percent_C_load_yr','kg_parea_yr','percent_N_load_yr')
-  unit_replacements <- c('kg pr. year', 'kg pr. animal pr. year', 'kg pr. tonne slurry loaded', '% of C loaded', 'kg pr. production area pr. year', '% of N loaded')
+
+  unit_patterns <- c('kg_yr','kg_anim_yr','kg_m3_load_yr','kg_m3_yr', 'percent_C_load_yr','kg_parea_yr','percent_N_load_yr')
+  unit_replacements <- c('kg pr. year', 'kg pr. animal pr. year', 'kg pr. tonne slurry loaded', 'kg pr. tonne slurry in storage', '% of C loaded', 'kg pr. production area pr. year', '% of N loaded')
 
   for(i in seq_along(unit_patterns)){
       emission_long$unit <- gsub(unit_patterns[i], unit_replacements[i], emission_long$unit)

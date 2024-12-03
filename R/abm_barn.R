@@ -9,7 +9,25 @@ abm_barn <- function(dat, sim, years, temp_overwrite){
     
     # get all the section and storage specific data
     farm_dat <- get_farm(w, years * 365, dat, temp_overwrite = temp_overwrite)
-    barn <- abm(years * 365, wthr_pars = farm_dat$wthr_pars, add_pars = farm_dat$farm_dat)
+    
+    if(farm_dat$extra_pars$class_anim == 'pig'){
+      
+      arrh_pars <- ABM::arrh_pars_pig2.0
+      grp_pars <- ABM::grp_pars_pig2.0
+      
+    } else if(farm_dat$extra_pars$class_anim == 'cattle'){
+      
+      arrh_pars <- ABM::arrh_pars_cattle2.0
+      grp_pars <- ABM::grp_pars_cattle2.0
+    
+    } else{
+      
+      arrh_pars <- ABM::arrh_pars2.0
+      grp_pars <- ABM::grp_pars2.0
+      
+    }
+    
+    barn <- abm(years * 365, grp_pars = grp_pars, arrh_pars = arrh_pars, wthr_pars = farm_dat$wthr_pars, add_pars = farm_dat$farm_dat)
  
     # add farm_dat needed for storage simulation and more
     barn <- cbind(barn, data.frame(farm_dat$extra_pars), source = 'barn')

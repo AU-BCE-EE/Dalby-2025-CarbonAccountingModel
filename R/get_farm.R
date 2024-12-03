@@ -249,7 +249,7 @@ get_farm <- function(w, days, dat, temp_overwrite = NULL){
 
   # compile farm specific pars for abm simulation, correct radiation and rain because it is inside a building.
   wthr_pars <- list(temp_C = temp_C_wthr, temp_air_C = temp_air_C_wthr, RH = 90, rain = 0, pres_kpa = 101, rs = 10)
-  
+
   farm_dat <- list(slopes = slopes, conc_fresh = conc_fresh, slurry_prod_rate = slurry_prod_rate,
                    storage_depth = storage_depth, resid_depth = resid_depth, rain = 0,
                    empty_int = empty_int, area = area, floor_area = floor_area, 

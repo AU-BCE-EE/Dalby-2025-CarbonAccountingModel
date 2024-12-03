@@ -1,6 +1,6 @@
 # Author: Frederik Dalby
 # Last modified 09-11-2022
-abm_farm <- function(dat, storage_mode = TRUE, years = 3, temp_overwrite = NULL, detail_output = FALSE){
+abm_farm <- function(dat, storage_mode = TRUE, years = 4, temp_overwrite = NULL, detail_output = FALSE){
 
   # check simulation time
   if(years <= 1) stop(paste0('simulation must be more than 1 year to reach steady state, recommended is 3 years and you typed ', years,' years'))
@@ -42,10 +42,11 @@ abm_farm <- function(dat, storage_mode = TRUE, years = 3, temp_overwrite = NULL,
   }
 
   # pull out storage data for calculating emission factors in calcNorm
+  
   storage_dat <- abm_storage_out$storage_dat
   digestate_dat <- abm_storage_out$digestate_dat
   norm <- calcNorm(barn_dat, storage_dat, digestate_dat, ave, days, years, detail_output = detail_output, feed = farm_dat$excreta_dat$feed)
-  norm$`Manure excretion` <- data.frame(farm_dat$excreta_dat['manure'], unit = c(rep('g pr batch time', 7), c(rep('gN pr batch time', 2)), rep('kg pr batch time', 6)))
+  norm$`Manure excretion` <- data.frame(farm_dat$excreta_dat['manure'], unit = c(rep('g pr batch time', 7), c(rep('gN pr batch time', 4)), rep('kg pr batch time', 6))) # change back to 2 in "gN pr batch time", when decied on N approach
   norm$`Feed composition` <- data.frame(farm_dat$excreta_dat['feed'], unit = c(rep('g pr kg wet feed', 15), c('kg wet feed pr. animal pr. batch')))
   norm$`Feed spillage` <- data.frame(farm_dat$excreta_dat['feed_spill'], unit = c('g pr. animal pr. batch time'))
 

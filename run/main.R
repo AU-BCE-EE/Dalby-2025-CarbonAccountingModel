@@ -13,7 +13,7 @@ abm_packages()
 # Get input file names
 fs <- list.files("../inputs/", full.names = TRUE)
 fs <- fs[grepl('xlsm', fs)]
-
+#fs <- fs[-7]
 output <- NULL
 
 for (i in fs){

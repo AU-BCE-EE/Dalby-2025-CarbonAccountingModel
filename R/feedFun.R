@@ -149,7 +149,7 @@ feedFun <- function(class_anim, type_anim, type, feed_dat, feed_intake, milk_pro
      #Møller et al. 
      CO2_ent <- 0
    }
-   
+
    if(grepl('cattle, tung race|cattle, jersey', type_anim) & !grepl("cattle, tung race, dry|cattle, jersey, dry", type_anim)){
      feces <- (-1.3548 + 2.2475 * DM_intake/batch_time) * batch_time # kg/year
      dm_feces <- (-0.1143 + 0.2805 * DM_intake/batch_time) * batch_time # kg/year
@@ -162,8 +162,10 @@ feedFun <- function(class_anim, type_anim, type, feed_dat, feed_intake, milk_pro
       (0.1216 + 0.0275 * milk_pro/10)) * batch_time # 
      # NRC (2021) 
      urine_N <- (12 + 0.333 * feed_dat.mod$N/batch_time) * batch_time # g/year
+     urine_N2 <- (-1249.19 + 427.86 * (feed_dat.mod$N / (DM_intake * 1000) * 100) - 6.0408 * (milk_prod/batch_time) + 28.25 * (DM_intake/batch_time)) * batch_time
      # from Dijkstra et al., 2013 Animal (2013), 7:s2, pp 292–302
      urea_N <- 0.761 * urine_N # g/year
+     urea_N2 <- (-582.81 + 201.35 * (feed_dat.mod$N / (DM_intake * 1000) * 100) - 3.1454 * (milk_prod/batch_time) + 12.3346 *  (DM_intake/batch_time)) * batch_time
      
      if(grepl('cattle, tung race', type_anim))
      CO2_ent <- (956 + (122 * DM_intake/batch_time) + (60 * body_weight^0.75) + (3.44 * feed_dat.mod$CP/DM_intake) - 777 + 
@@ -181,8 +183,8 @@ feedFun <- function(class_anim, type_anim, type, feed_dat, feed_intake, milk_pro
   }
  
  
-  names <- c(colnames(manure), 'urine_N', 'urea_N', 'feces', 'urine')
-  manure <- c(as.numeric(manure), urine_N, urea_N, feces, urine)
+  names <- c(colnames(manure), 'urine_N', 'urine_N2', 'urea_N', 'urea_N2', 'feces', 'urine')
+  manure <- c(as.numeric(manure), urine_N, urine_N2, urea_N, urea_N2, feces, urine)
   names(manure) <- names
   
   return(list(manure = manure, CH4_ent = CH4_ent, CO2_ent = CO2_ent, fermFib = fermFib/feed_intake))

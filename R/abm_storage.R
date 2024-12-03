@@ -15,6 +15,24 @@ abm_storage <- function(years, rem_dat, conc_fresh, xa_fresh, temps, doy = doy, 
       # take out slurry mass to the first storage and sort with respect to time
       stor_dat <- rem_dat %>% filter(storage_ID == i) %>% arrange(time) 
       specs <- stor_dat[1,]
+      
+      if(specs$class_anim == 'pig'){
+        
+        arrh_pars <- ABM::arrh_pars_pig2.0
+        grp_pars <- ABM::grp_pars_pig2.0
+        
+      } else if(specs$class_anim == 'cattle'){
+        
+        arrh_pars <- ABM::arrh_pars_cattle2.0
+        grp_pars <- ABM::grp_pars_cattle2.0
+        
+      } else{
+        
+        arrh_pars <- ABM::arrh_pars2.0
+        grp_pars <- ABM::grp_pars2.0
+        
+      }
+      
       # calculated slurry weighted average from different sections of conc_fresh and xa_fresh for input to storage 
       inflows <- as.data.frame(stor_dat) %>% select(names(conc_fresh), names(xa_fresh), slurry_mass, section_ID) %>% 
         group_by(section_ID) %>%
@@ -104,7 +122,8 @@ abm_storage <- function(years, rem_dat, conc_fresh, xa_fresh, temps, doy = doy, 
       }
 
       # run model for storage
-      storage <- cbind(abm(days = years * 365, 1, wthr_pars = wthr_pars, add_pars = list(slurry_mass = slurry_mass_dat, 
+      storage <- cbind(abm(days = years * 365, 1, wthr_pars = wthr_pars, arrh_pars = arrh_pars, grp_pars = grp_pars, 
+                           add_pars = list(slurry_mass = slurry_mass_dat, 
                                     conc_fresh = storage_conc_fresh, xa_fresh = storage_xa_fresh, 
                                     pH = specs$pH_storage, cover = specs$cover_s, storage_depth = specs$storage_depth, 
                                     area = specs$ex_storage_area, floor_area = 0, rain = rain, evap = diff(evap_dat)[1],
